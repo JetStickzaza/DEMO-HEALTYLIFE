@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthyLife - Mission Complete</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef5f9;
+            color: #333;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #2d89ef;
+        }
+        .header p {
+            color: #555;
+            font-size: 16px;
+        }
+        .score {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #2d89ef;
+            font-weight: bold;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            background-color: #2d89ef;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .nav button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav button.active, .nav button:hover {
+            background-color: #1c5db2;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .button {
+            display: inline-block;
+            background-color: #2d89ef;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #1c5db2;
+        }
+        .button.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #alert {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffcc00;
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <div id="alert"></div>
+    <div class="container">
+        <div class="header">
+            <h1>HealthyLife</h1>
+            <p>"สุขภาพที่ดีเริ่มต้นได้ทุกวัน"</p>
+            <div class="score">คะแนนรวม: <span id="total-score">0</span></div>
+        </div>
+
+        <div class="nav">
+            <button class="nav-button" data-target="home" id="home-btn">หน้าแรก</button>
+            <button class="nav-button" data-target="missions" id="missions-btn">ภารกิจ</button>
+            <button class="nav-button" data-target="rewards" id="rewards-btn">รางวัล</button>
+        </div>
+
+        <!-- Home Page -->
+        <div class="page" id="home" style="display: block;">
+            <h2>ยินดีต้อนรับสู่ HealthyLife</h2>
+            <p>เริ่มต้นวันใหม่ด้วยภารกิจสุขภาพและรับรางวัลเพื่อชีวิตที่ดีขึ้น!</p>
+            <a href="#" id="start-btn" class="button">เริ่มต้นเลย</a>
+            <a href="#" id="reset-btn" class="button">เริ่มวันใหม่</a> <!-- ปุ่มเริ่มวันใหม่ -->
+        </div>
+
+        <!-- Missions Page -->
+        <div class="page" id="missions">
+            <h2>ภารกิจสุขภาพของคุณ</h2>
+            <div class="card">
+                <p>✅ ดื่มน้ำ 8 แก้ว</p>
+                <p>ได้รับ: 50 คะแนน</p>
+                <button class="button complete-btn" data-points="50">สำเร็จ</button>
+            </div>
+            <div class="card">
+                <p>🏃‍♂️ เดินออกกำลังกาย 30 นาที</p>
+                <p>ได้รับ: 100 คะแนน</p>
+                <button class="button complete-btn" data-points="100">สำเร็จ</button>
+            </div>
+            <div class="card">
+                <p>🥗 ทานผักและผลไม้ครบ 5 ส่วน</p>
+                <p>ได้รับ: 75 คะแนน</p>
+                <button class="button complete-btn" data-points="75">สำเร็จ</button>
+            </div>
+        </div>
+
+        <!-- Rewards Page -->
+        <div class="page" id="rewards">
+            <h2>รางวัลของฉัน</h2>
+            <div class="card">
+                <p>คูปองสลัดสุขภาพ (500 คะแนน)</p>
+                <p id="reward1-info">ได้รับแล้ว: 0 ครั้ง</p>
+                <button class="button" id="reward1-btn" data-reward="500">แลกเลย</button>
+                <button class="button" id="use-reward1-btn" data-reward="1" style="display:none;">ใช้</button>
+            </div>
+            <div class="card">
+                <p>น้ำผลไม้สด (750 คะแนน)</p>
+                <p id="reward2-info">ได้รับแล้ว: 0 ครั้ง</p>
+                <button class="button" id="reward2-btn" data-reward="750">แลกเลย</button>
+                <button class="button" id="use-reward2-btn" data-reward="2" style="display:none;">ใช้</button>
+            </div>
+            <div class="card">
+                <p>กล่องอาหารสุขภาพ (1000 คะแนน)</p>
+                <p id="reward3-info">ได้รับแล้ว: 0 ครั้ง</p>
+                <button class="button" id="reward3-btn" data-reward="1000">แลกเลย</button>
+                <button class="button" id="use-reward3-btn" data-reward="3" style="display:none;">ใช้</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const navButtons = document.querySelectorAll('.nav-button');
+        const pages = document.querySelectorAll('.page');
+        const startButton = document.getElementById('start-btn');
+        const resetButton = document.getElementById('reset-btn');
+        const totalScoreElement = document.getElementById('total-score');
+        const completeButtons = document.querySelectorAll('.complete-btn');
+        const rewardButtons = document.querySelectorAll('.button[id^="reward"]');
+        const useRewardButtons = document.querySelectorAll('.button[id^="use-reward"]');
+
+        let totalScore = 0;
+        let rewardsReceived = { 1: 0, 2: 0, 3: 0 };
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                pages.forEach(page => page.classList.remove('active'));
+                const targetPage = document.getElementById(button.dataset.target);
+                targetPage.classList.add('active');
+            });
+        });
+
+        // Set default active button
+        document.getElementById('home-btn').classList.add('active');
+
+        // Navigate to missions page when start button is clicked
+        startButton.addEventListener('click', () => {
+            document.getElementById('missions-btn').click();
+        });
+
+        // Add functionality to complete mission buttons
+        completeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const points = parseInt(button.getAttribute('data-points'));
+                totalScore += points;
+                totalScoreElement.textContent = totalScore;
+
+                button.classList.add('disabled');
+                button.textContent = 'สำเร็จแล้ว';
+                button.disabled = true;
+            });
+        });
+
+        // Reset mission statuses but not score
+        resetButton.addEventListener('click', () => {
+            completeButtons.forEach(button => {
+                button.classList.remove('disabled');
+                button.textContent = 'สำเร็จ';
+                button.disabled = false;
+            });
+        });
+
+        // ฟังก์ชันแลกรางวัล
+        rewardButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const rewardPoints = parseInt(button.getAttribute('data-reward'));
+                if (totalScore >= rewardPoints) {
+                    totalScore -= rewardPoints;
+                    totalScoreElement.textContent = totalScore;
+
+                    const rewardId = button.id.replace('reward', '').replace('-btn', '');
+                    rewardsReceived[rewardId]++;
+
+                    const rewardInfo = document.getElementById(`reward${rewardId}-info`);
+                    rewardInfo.textContent = `ได้รับแล้ว: ${rewardsReceived[rewardId]} ครั้ง`;
+
+                    const useRewardButton = document.getElementById(`use-reward${rewardId}-btn`);
+                    useRewardButton.style.display = 'inline-block';
+
+                    showAlert('แลกรางวัลสำเร็จ!');
+                } else {
+                    showAlert('คะแนนไม่พอสำหรับรางวัลนี้');
+                }
+            });
+        });
+
+        useRewardButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const rewardId = button.id.replace('use-reward', '').replace('-btn', '');
+                rewardsReceived[rewardId]--;
+                const rewardInfo = document.getElementById(`reward${rewardId}-info`);
+                rewardInfo.textContent = `ได้รับแล้ว: ${rewardsReceived[rewardId]} ครั้ง`;
+
+                button.style.display = 'none';
+                showAlert('รางวัลถูกใช้แล้ว');
+            });
+        });
+
+        // ฟังก์ชันแจ้งเตือน
+        function showAlert(message) {
+            const alertBox = document.getElementById('alert');
+            alertBox.textContent = message;
+            alertBox.style.display = 'block';
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
